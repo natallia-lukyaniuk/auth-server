@@ -19,59 +19,9 @@ app.use(bodyParser.json());
 
 app.use(morgan('dev'));
 
-// app.get('/', function(req, res) {
-//     res.send('Hello! The API is at http://localhost:' + port + '/api');
-// });
-
-// app.get('/setup', function(req, res) {
-
-//   var nick = new User({
-//     name: 'Nick Cerminara',
-//     password: 'password',
-//     admin: true
-//   });
-
-//   nick.save(function(err) {
-//     if (err) throw err;
-
-//     console.log('User saved successfully');
-//     res.json({ success: true });
-//   });
-// });
-
 var apiRoutes = express.Router();
 
-apiRoutes.post('/authenticate', function(req, res) {
-  User.findOne({
-    login: req.body.login
-  }, function(err, user) {
-
-    if (err) throw err;
-
-    if (!user) {
-      res.json({ success: false, message: 'Authentication failed. User not found.' });
-    } else if (user) {
-
-      if (user.password != req.body.password) {
-        res.json({ success: false, message: 'Authentication failed. Wrong password.' });
-      } else {
-
-        const payload = {
-            admin: user.admin
-        };
-        var token = jwt.sign(payload, app.get('superSecret'), {
-          expiresIn: 1440
-        });
-
-        res.json({
-          success: true,
-          message: 'Enjoy your token!',
-          token: token
-        });
-      }
-    }
-  });
-});
+require('./app/routes/authenticate')(apiRoutes, app);
 
 apiRoutes.use(function(req, res, next) {
 
@@ -97,19 +47,9 @@ apiRoutes.use(function(req, res, next) {
   }
 });
 
-apiRoutes.get('/', function(req, res) {
-  res.json({ message: 'Welcome to the coolest API on earth!' });
-});
-
-apiRoutes.get('/users', function(req, res) {
-  User.find({}, function(err, users) {
-    res.json(users);
-  });
-});
+require('./app/routes')(apiRoutes, app);
 
 app.use('/api', apiRoutes);
-
-// require('./app/routes')(app, database);
 
 app.listen(port);
 console.log('Magic happens at http://localhost:' + port);
