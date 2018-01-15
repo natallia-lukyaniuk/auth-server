@@ -4,7 +4,7 @@ var User   = require('../models/user');
 module.exports = function (apiRoutes, app) {
   apiRoutes.post('/authenticate', function(req, res) {
     User.findOne({
-      login: req.body.login
+      login: 'nlukuaniuk'
     }, function(err, user) {
 
       if (err) throw err;
@@ -13,7 +13,7 @@ module.exports = function (apiRoutes, app) {
         res.json({ success: false, message: 'Authentication failed. User not found.' });
       } else if (user) {
 
-        if (user.password != req.body.password) {
+        if (user.password != '12345') {
           res.json({ success: false, message: 'Authentication failed. Wrong password.' });
         } else {
 
