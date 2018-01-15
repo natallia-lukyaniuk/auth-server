@@ -15,6 +15,7 @@ const getTask = (req, res) => {
   const id = req.params.id;
   const details = { '_id': new ObjectID(id) };
  Tasks.findOne(details, (err, item) => {
+   const taskInfo = item;
     if (err) {
         res.send({'error': 'An error has occurred'});
     } else {
@@ -23,7 +24,7 @@ const getTask = (req, res) => {
         if (err) {
           res.send({'error': 'An error has occurred'});
         } else {
-          const task = Object.assign({}, item, {user: user});
+          const task = Object.assign({}, item.toObject(), {user: user});
           res.send(task);
         }
       })

@@ -11,29 +11,20 @@ module.exports = function (apiRoutes, app) {
     apiRoutes.post('/projects/:id/add', addMemberToProject);
 }
 
-// const getMembersByProjectId = (req, res) => {
-//   const id = req.params.id;
-//   const memberDetails = { 'projectId': id };
-//   const users = [];
-//   ProjectUser.find(memberDetails, (err, items) => {
-//     async.map(items, (item, next) => {
-//       const memberId = { '_id': new ObjectID(item.userId) };
-//       Users.findOne(memberId, (err, user) => {
-//         next(err, user);
-//       });
-//     },
-//     (err, users) => {
-//       res.send(users);
-//     });
-//   });
-// }
-
 const getMembersByProjectId = (req, res) => {
-  // const id = req.params.id;
-  // const memberDetails = { 'projectId': id };
-  // const users = [];
-  ProjectUser.find({}, (err, items) => {
-    res.send(items);
+  const id = req.params.id;
+  const memberDetails = { 'projectId': id };
+  const users = [];
+  ProjectUser.find(memberDetails, (err, items) => {
+    async.map(items, (item, next) => {
+      const memberId = { '_id': new ObjectID(item.userId) };
+      Users.findOne(memberId, (err, user) => {
+        next(err, user);
+      });
+    },
+    (err, users) => {
+      res.send(users);
+    });
   });
 }
 
@@ -57,12 +48,12 @@ const addMemberToProject = (req, res) => {
   const project_user = {
     projectId: req.params.id,
     userId: req.query.memberId
-  }
-  ProjectUser.insert(project_user, (err, result) => {
+  };
+  ProjectUser.create(project_user, (err, result) => {
     if (err) { 
       res.send({ 'error': 'An error has occurred' }); 
     } else {
-      res.send(result.ops[0]);
+      res.send(result);
     }
   });
 }
