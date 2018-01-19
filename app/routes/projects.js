@@ -26,7 +26,7 @@ const getProject = (req, res) => {
         } else {
           const taskDetails = { 'projectId': id };
           Tasks.find(taskDetails, (err, items) => {
-            const project = Object.assign({}, item, {tasks: items});
+            const project = Object.assign({}, item.toObject(), {tasks: items});
             res.send(project);
           });
         }
