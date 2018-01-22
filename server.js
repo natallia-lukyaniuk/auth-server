@@ -30,7 +30,7 @@ require('./app/routes/authenticate')(apiRoutes, app);
 
 apiRoutes.use(function(req, res, next) {
 
-  var token = req.body.token || req.query.token || req.headers['x-access-token'];
+  var token = req.body.token || req.query.token || req.headers['token'];
 
   if (token) {
 
